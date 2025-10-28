@@ -234,6 +234,7 @@ func (c *Conn) callToRequest(call *CallMessage) (messages.Request, ErrorCode) {
 	}
 	err = json.Unmarshal(originalPayload, req)
 	if err != nil {
+		fmt.Println(err)
 		return nil, FormationViolation
 	}
 	return req, Nil
