@@ -182,6 +182,7 @@ func (c *Conn) ReadMessage() error {
 	log.Debug("Received a message, raw: %v", string(messageBytes))
 	msg, err := UnmarshalMessage(messageBytes)
 	if err != nil {
+		log.Error("unmarshal error=%v", err)
 		return err
 	}
 

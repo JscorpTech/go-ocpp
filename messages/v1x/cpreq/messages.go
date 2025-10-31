@@ -113,7 +113,7 @@ type StatusNotification struct {
 	chargepointRequest
 	XMLName xml.Name `json:"-" xml:"urn://Ocpp/Cs/2012/06/ statusNotificationRequest"`
 
-	ConnectorId     string             `json:"connectorId" xml:"connectorId,omitempty"`
+	ConnectorId     int                `json:"connectorId" xml:"connectorId,omitempty"`
 	ErrorCode       cpstatus.ErrorCode `json:"errorCode" xml:"errorCode,omitempty"`
 	Info            string             `json:"info,omitempty" xml:"info,omitempty"`
 	Status          string             `json:"status" xml:"status,omitempty"`
