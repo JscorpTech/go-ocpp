@@ -53,8 +53,8 @@ func FromActionName(action string) messages.Response {
 	case "BootNotification":
 		return &cpresp.BootNotification{}
 	// TODO: DataTransfer comes from both the CS and CP
-	// case "DataTransfer":
-	// 	return &cpresp.DataTransfer{}
+	case "DataTransfer":
+		return &cpresp.DataTransfer{}
 	case "DiagnosticsStatusNotification":
 		return &cpresp.DiagnosticsStatusNotification{}
 	case "FirmwareStatusNotification":

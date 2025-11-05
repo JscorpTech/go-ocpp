@@ -44,7 +44,6 @@ type CentralSystem interface {
 	SetChargePointDisconnectionListener(ChargePointConnectionListener)
 	WaitConnect(cpID string) <-chan struct{}
 	WaitDisconnect(cpID string) <-chan struct{}
-	WriteJson(string, []interface{})
 }
 
 type centralSystem struct {
@@ -91,15 +90,6 @@ func (csys *centralSystem) Run(port string, cphandler ChargePointMessageHandler)
 	})
 	log.Debug("Central system running on port: %s", port)
 	return http.ListenAndServe(port, nil)
-}
-
-func (csys *centralSystem) WriteJson(cpID string, command []interface{}) {
-	conn := csys.conns[cpID]
-	if conn == nil {
-		log.Debug("Connection not found")
-		return
-	}
-	conn.Conn.WriteJSON(command)
 }
 
 func (csys *centralSystem) handleWebsocket(w http.ResponseWriter, r *http.Request, cphandler ChargePointMessageHandler) {
