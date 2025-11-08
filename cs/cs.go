@@ -100,7 +100,7 @@ func (csys *centralSystem) handleWebsocket(w http.ResponseWriter, r *http.Reques
 	if host == "" {
 		host = r.Host
 	}
-	cpID := strings.Split(strings.Trim(r.URL.Path, "/"), "/")[1]
+	cpID := strings.Trim(r.URL.Path, "/")
 	cpID = host + ":" + cpID
 
 	rawReq, _ := httputil.DumpRequest(r, true)
