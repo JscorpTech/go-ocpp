@@ -28,7 +28,7 @@ type ChargePointRequestMetadata struct {
 // ChargePointMessageHandler handles the OCPP messages coming from the charger
 type ChargePointMessageHandler func(cprequest cpreq.ChargePointRequest, metadata ChargePointRequestMetadata) (cpresp.ChargePointResponse, error)
 
-type ChargePointConnectionListener func(cpID string)
+type ChargePointConnectionListener func(cpID string, host string)
 type CentralSystem interface {
 	// Run the central system on the given port
 	// and handles each incoming ChargepointRequest
@@ -65,8 +65,8 @@ func New() CentralSystem {
 		connChans:       make(map[string]chan struct{}, 0),
 		connsCount:      make(map[string]int, 0),
 		connsConnected:  make(map[string]bool, 0),
-		connListener:    func(cpID string) {},
-		disconnListener: func(cpID string) {},
+		connListener:    func(cpID string, host string) {},
+		disconnListener: func(cpID string, host string) {},
 	}
 }
 
@@ -124,12 +124,12 @@ func (csys *centralSystem) handleWebsocket(w http.ResponseWriter, r *http.Reques
 	csys.connMux.Unlock()
 
 	log.Debug("Connected with %s", cpID)
-	go csys.connListener(cpID)
+	go csys.connListener(cpID, host)
 
 	defer func() {
 		conn.Close()
 		log.Debug("Closed connection of: %s", cpID)
-		go csys.disconnListener(cpID)
+		go csys.disconnListener(cpID, host)
 		csys.connMux.Lock()
 		csys.connsCount[cpID]--
 		// if the same CP connected more times before we do the

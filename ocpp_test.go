@@ -25,11 +25,11 @@ func Test_Connection(t *testing.T) {
 
 	csysPort := ":5050"
 	csys := cs.New()
-	csys.SetChargePointConnectionListener(func(cpID string) {
+	csys.SetChargePointConnectionListener(func(cpID string, host string) {
 		// t.Log("cpoint connected: ", cpID)
 		cpointConnected <- cpID
 	})
-	csys.SetChargePointDisconnectionListener(func(cpID string) {
+	csys.SetChargePointDisconnectionListener(func(cpID string, host string) {
 		// t.Log("cpoint disconnected: ", cpID)
 		cpointDisconnected <- cpID
 	})
