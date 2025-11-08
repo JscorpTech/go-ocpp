@@ -3,6 +3,7 @@ package cs
 import (
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"strings"
@@ -21,6 +22,7 @@ import (
 type ChargePointRequestMetadata struct {
 	ChargePointID string
 	HTTPRequest   *http.Request
+	Host          string
 }
 
 // ChargePointMessageHandler handles the OCPP messages coming from the charger
@@ -94,7 +96,11 @@ func (csys *centralSystem) Run(port string, cphandler ChargePointMessageHandler)
 
 func (csys *centralSystem) handleWebsocket(w http.ResponseWriter, r *http.Request, cphandler ChargePointMessageHandler) {
 	log.Debug("Current WS connections map: %v", csys.conns)
-	cpID := strings.TrimPrefix(r.URL.Path, "/")
+	host, _, _ := net.SplitHostPort(r.Host)
+	if host == "" {
+		host = r.Host
+	}
+	cpID := strings.Split(strings.Trim(r.URL.Path, "/"), "/")[1]
 
 	rawReq, _ := httputil.DumpRequest(r, true)
 	log.Debug("Raw WS request: %s", string(rawReq))
@@ -147,6 +153,7 @@ func (csys *centralSystem) handleWebsocket(w http.ResponseWriter, r *http.Reques
 			cpresponse, err := cphandler(cprequest, ChargePointRequestMetadata{
 				ChargePointID: cpID,
 				HTTPRequest:   r,
+				Host:          host,
 			})
 			err = conn.SendResponse(req.MessageID, cpresponse, err)
 			if err != nil {
